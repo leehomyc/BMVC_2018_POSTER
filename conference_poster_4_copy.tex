@@ -40,10 +40,7 @@
 \usepackage{tikz} % Required for flow chart
 \usepackage{amsmath}
 \usepackage{graphicx}
-
-\usepackage{caption}
 \usepackage{bm}
-\usepackage{floatrow}
 \usetikzlibrary{shapes,arrows} % Tikz libraries required for the flow chart in the template
 
 \newcommand{\compresslist}{ % Define a command to reduce spacing within itemize/enumerate environments, this is used right after \begin{itemize} or \begin{enumerate}
@@ -51,8 +48,6 @@
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
 }
-\newfloatcommand{capbtabbox}{table}[][\FBwidth]
-\floatsetup{heightadjust=object}
 
 \definecolor{lightblue}{rgb}{0.53,0.81,0.98} % Defines the color used for content box headers
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -161,111 +156,32 @@ Notes: we use VGG-19 pre-trained on ImageNet as $F$. We obtained the best result
 \vspace{0.5cm}
 }
 
-\headerbox{\small Domain Adaptation Results}{name=comparison,column=2,span=1, below=content}{
-From photo to maps:\\\\
-\begin{minipage}[t]{.45\linewidth}
-%\begin{center}
-%\begin{figure}[!h]
-%\begin{floatrow}
-\tiny
-\setlength\tabcolsep{1pt}
 
-\begin{tabular}{ccccccc}
-\includegraphics[width=.18\textwidth]{figures/map/1005_real_A.jpg}&
-\includegraphics[width=.18\textwidth]{figures/map/1005_fake_B_pix2pix.jpg}&
-\includegraphics[width=.18\textwidth]{figures/map/1005_cyclegan.jpg}&
-\includegraphics[width=.18\textwidth]{figures/map/1005_fake_B_ours.jpg}&
-\includegraphics[width=.18\textwidth]{figures/map/1005_real_B.jpg} \\ 
-input & Pix2Pix & CycleGAN & Ours & GT   \\ 
-\end{tabular}
-\end{minipage}
-\hspace{.23cm}
-\begin{minipage}[t]{.5\linewidth}
-\scriptsize
-\setlength\tabcolsep{1pt}
-\begin{tabular}{cc} \hline
-  Method & Accuracy \\ \hline
-  Pix2Pix & 43.18\% \\
-  CycleGAN & 45.91\% \\
-  Ours &  \textbf{46.72\%} \\ \hline
-  \end{tabular}
-%\vspace{.3cm}
-\end{minipage}
-{%
-  \captionof{figure}{\scriptsize Visualization (left) and quantitative evaluation (right) of image to map translation results.}\label{fig:mnist1}
+\headerbox{\small Training Details}{name=drop_adversarial,column=2,span=1, below=content}{ 
+\noindent\textbf{Adaptive weight induction :}\\
+\emph{Problem: } How to select $\lambda$, the weight of the self-regularization term relative to the image adversarial term? \\
+\emph{Existing approach: } Empirically and fixed (CycleGAN, UNIT, etc.).\\
+\emph{Our approach: } Adaptive and dynamic.\\
+we start by setting $\lambda=0$, then we gradually increase $\lambda$, until the adversarial loss increases above some threshold $\ell_{adv}^t$.
 }
-\normalsize
-From MNIST to USPS and MNIST-M:\\\\
-\begin{minipage}[t]{.35\linewidth}
-%\begin{center}
-%\begin{figure}[!h]
-%\begin{floatrow}
+
+\headerbox{\small Analysis}{name=comparison,column=2,span=1, below=drop_adversarial}{
+Effects of using different layers as feature extractors:\\
+\begin{minipage}[t]{1\linewidth}
+\begin{center}
+\centering
+\small
 \setlength\tabcolsep{1pt}
-\begin{tabular}{ccccccc}
-\includegraphics[width=.16\textwidth]{figures/mnist/0_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/0_fake_B.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/0_fake_B-1.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/2_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/2_fake_B-1.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/2_fake_B.jpg} \\
-\includegraphics[width=.16\textwidth]{figures/mnist/3_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/3_fake_B-1.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/3_fake_B.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/4_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/4_fake_B-1.jpg}&
-\includegraphics[width=.16\textwidth]{figures/mnist/4_fake_B.jpg} \\
+\begin{tabular}{cccc}
+\includegraphics[width=.24\textwidth]{figures/ablation/input.jpg}&
+\includegraphics[width=.24\textwidth]{figures/ablation/0_1.jpg}&
+\includegraphics[width=.24\textwidth]{figures/ablation/3_4.jpg}&
+\includegraphics[width=.24\textwidth]{figures/ablation/0_2.jpg} \\
+(a) & (b) & (c) & (d) \\
 \end{tabular}
+\end{center}
 \end{minipage}
-\hspace{.85cm}
-\begin{minipage}[t]{.65\linewidth}
-\scriptsize
-\setlength\tabcolsep{1pt}
-  \begin{tabular}{ccc} \hline
-  Method & USPS & MNIST-M \\ \hline
-  CoGAN & 95.65\% & - \\
-  PixelDA & 95.90\% & 98.20\% \\
-  UNIT & 95.97\% & - \\
-  CycleGAN & 94.28\% & 93.15\% \\
-  Target-only & 96.50\% & 96.40\% \\
-  Ours &  \textbf{96.80\%} & \textbf{98.33\%} \\ \hline
-  \end{tabular}
-
-\end{minipage}
-{%
-  \captionof{figure}{\scriptsize Visualization (left) and quantitative evaluation (right) of domain adaptation from MNIST to USPS and MNIST-M.}\label{fig:mnist1}
-}
-\normalsize
-From rendered face to real face:\\\\
-\begin{minipage}[t]{.45\linewidth}
-
-\tiny
-\setlength\tabcolsep{1.1pt}
-\begin{tabular}{ccccccc}
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000003_crop_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000003_crop_fake_B_2.jpg}&
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000003_crop_fake_B.jpg}&
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000004_crop_real_A.jpg}&
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000004_crop_fake_B_2.jpg}&
-\includegraphics[width=.16\textwidth]{figures/face/img_g100_t50_000004_crop_fake_B.jpg}\\
-Input & CycGAN & Ours & Input & CycGAN & Ours \\
-\end{tabular}
-\end{minipage}
-\hspace{0.62cm}
-\begin{minipage}[t]{.45\linewidth}
-\scriptsize
-\setlength\tabcolsep{1pt}
-  \begin{tabular}{cc} \hline
-  Method & MSE \\ \hline
-  Baseline & 2.26  \\
-  CycleGAN & 2.04 \\
-  Ours &  \textbf{1.97} \\ \hline
-  \end{tabular}
-
-\end{minipage}
-{%
-  \captionof{figure}{\scriptsize Visualization (left) and 3DMM estimation accuracy results (right) of domain adaptation from rendered faces to real faces.}\label{fig:mnist1}
-}
-\normalsize
+(a) input. (b) using the first two layers of VGG. (c) using the last two layers of VGG. (d) using the first three layers of VGG.
 }
 
 \headerbox{\small Visual Comparisons}{name=imagenet,column=3,span=1, row=0}{ 
